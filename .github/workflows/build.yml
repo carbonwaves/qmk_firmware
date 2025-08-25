@@ -1,0 +1,28 @@
+name: QMK Firmware
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y python3 python3-pip gcc-avr binutils-avr avr-libc dfu-programmer dfu-util teensy-loader-cli avrdude
+
+      - name: Setup QMK
+        run: |
+          python3 -m pip install qmk
+          qmk setup -y
+
+      - name: Build firmware
+        run: |
+          qmk compile -kb keyboards/yunzii/al68 -km keymap.c
